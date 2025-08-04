@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Afghanistan Date Converter</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Plus Jakarta Sans Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header -->
+        <div class="header-section">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-12 text-center">
+                        <h1 class="main-title">Afghanistan Date Converter</h1>
+                        
+                        <!-- Tab Navigation -->
+                        <div class="custom-tabs">
+                            <div class="tab-item active" data-tab="calendar-converter">
+                                <i data-feather="calendar" class="tab-icon"></i>
+                                Calendar Converter
+                            </div>
+                            <div class="tab-item" data-tab="julian-info">
+                                <i data-feather="info" class="tab-icon"></i>
+                                Julian Day Info
+                            </div>
+                            <div class="tab-item" data-tab="about">
+                                <i data-feather="book-open" class="tab-icon"></i>
+                                About Calendars
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="container">
+                <!-- Calendar Converter Tab -->
+                <div class="tab-content active" id="calendar-converter">
+                    <div class="content-header">
+                        <h2 class="section-title">Multi-Calendar Date Converter</h2>
+                        <p class="section-subtitle">Convert dates between different calendar systems instantly</p>
+                    </div>
+
+                    <!-- Calendar Cards Grid -->
+                    <div class="row">
+                        <!-- Gregorian Calendar -->
+                        <div class="col-lg-6 col-md-12 mb-4">
+                            <div class="calendar-card">
+                                <div class="calendar-header">
+                                    <i data-feather="globe" class="calendar-icon"></i>
+                                    <h3 class="calendar-title">Gregorian Calendar</h3>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-4">
+                                        <div class="date-form-group">
+                                            <label class="form-label">Year</label>
+                                            <input type="number" id="gregorian-year" class="form-control" value="2025" min="1" max="9999">
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="date-form-group">
+                                            <label class="form-label">Month</label>
+                                            <select id="gregorian-month" class="form-select">
+                                                <option value="1">January</option>
+                                                <option value="2">February</option>
+                                                <option value="3">March</option>
+                                                <option value="4">April</option>
+                                                <option value="5">May</option>
+                                                <option value="6">June</option>
+                                                <option value="7">July</option>
+                                                <option value="8" selected>August</option>
+                                                <option value="9">September</option>
+                                                <option value="10">October</option>
+                                                <option value="11">November</option>
+                                                <option value="12">December</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="date-form-group">
+                                            <label class="form-label">Day</label>
+                                            <select id="gregorian-day" class="form-select">
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4" selected>4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="7">7</option>
+                                                <option value="8">8</option>
+                                                <option value="9">9</option>
+                                                <option value="10">10</option>
+                                                <option value="11">11</option>
+                                                <option value="12">12</option>
+                                                <option value="13">13</option>
+                                                <option value="14">14</option>
+                                                <option value="15">15</option>
+                                                <option value="16">16</option>
+                                                <option value="17">17</option>
+                                                <option value="18">18</option>
+                                                <option value="19">19</option>
+                                                <option value="20">20</option>
+                                                <option value="21">21</option>
+                                                <option value="22">22</option>
+                                                <option value="23">23</option>
+                                                <option value="24">24</option>
+                                                <option value="25">25</option>
+                                                <option value="26">26</option>
+                                                <option value="27">27</option>
+                                                <option value="28">28</option>
+                                                <option value="29">29</option>
+                                                <option value="30">30</option>
+                                                <option value="31">31</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="weekday-display">
+                                    <div class="weekday-label">Weekday</div>
+                                    <div class="weekday-value" id="gregorian-weekday">-</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Afghan Calendar -->
+                        <div class="col-lg-6 col-md-12 mb-4">
+                            <div class="calendar-card">
+                                <div class="calendar-header">
+                                    <i data-feather="sun" class="calendar-icon"></i>
+                                    <h3 class="calendar-title">Afghan/Persian Calendar</h3>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-4">
+                                        <div class="date-form-group">
+                                            <label class="form-label">Year</label>
+                                            <input type="number" id="afghan-year" class="form-control" value="1403" min="1" max="9999">
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="date-form-group">
+                                            <label class="form-label">Month</label>
+                                            <select id="afghan-month" class="form-select">
+                                                <option value="1">Hamal</option>
+                                                <option value="2">Sawr</option>
+                                                <option value="3">Jawza</option>
+                                                <option value="4">Saratan</option>
+                                                <option value="5" selected>Asad</option>
+                                                <option value="6">Sonbola</option>
+                                                <option value="7">Mizan</option>
+                                                <option value="8">Aqrab</option>
+                                                <option value="9">Qaws</option>
+                                                <option value="10">Jadi</option>
+                                                <option value="11">Dalv</option>
+                                                <option value="12">Hoot</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="date-form-group">
+                                            <label class="form-label">Day</label>
+                                            <select id="afghan-day" class="form-select">
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="7">7</option>
+                                                <option value="8">8</option>
+                                                <option value="9">9</option>
+                                                <option value="10">10</option>
+                                                <option value="11">11</option>
+                                                <option value="12" selected>12</option>
+                                                <option value="13">13</option>
+                                                <option value="14">14</option>
+                                                <option value="15">15</option>
+                                                <option value="16">16</option>
+                                                <option value="17">17</option>
+                                                <option value="18">18</option>
+                                                <option value="19">19</option>
+                                                <option value="20">20</option>
+                                                <option value="21">21</option>
+                                                <option value="22">22</option>
+                                                <option value="23">23</option>
+                                                <option value="24">24</option>
+                                                <option value="25">25</option>
+                                                <option value="26">26</option>
+                                                <option value="27">27</option>
+                                                <option value="28">28</option>
+                                                <option value="29">29</option>
+                                                <option value="30">30</option>
+                                                <option value="31">31</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="weekday-display">
+                                    <div class="weekday-label">Weekday</div>
+                                    <div class="weekday-value" id="afghan-weekday">-</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Islamic Calendar -->
+                        <div class="col-lg-6 col-md-12 mb-4">
+                            <div class="calendar-card">
+                                <div class="calendar-header">
+                                    <i data-feather="moon" class="calendar-icon"></i>
+                                    <h3 class="calendar-title">Islamic Calendar</h3>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-4">
+                                        <div class="date-form-group">
+                                            <label class="form-label">Year</label>
+                                            <input type="number" id="islamic-year" class="form-control" value="1446" min="1" max="9999">
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="date-form-group">
+                                            <label class="form-label">Month</label>
+                                            <select id="islamic-month" class="form-select">
+                                                <option value="1">Muharram</option>
+                                                <option value="2" selected>Safar</option>
+                                                <option value="3">Rabi al-awwal</option>
+                                                <option value="4">Rabi al-thani</option>
+                                                <option value="5">Jumada al-awwal</option>
+                                                <option value="6">Jumada al-thani</option>
+                                                <option value="7">Rajab</option>
+                                                <option value="8">Sha'ban</option>
+                                                <option value="9">Ramadan</option>
+                                                <option value="10">Shawwal</option>
+                                                <option value="11">Dhu al-Qi'dah</option>
+                                                <option value="12">Dhu al-Hijjah</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="date-form-group">
+                                            <label class="form-label">Day</label>
+                                            <select id="islamic-day" class="form-select">
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="7">7</option>
+                                                <option value="8">8</option>
+                                                <option value="9" selected>9</option>
+                                                <option value="10">10</option>
+                                                <option value="11">11</option>
+                                                <option value="12">12</option>
+                                                <option value="13">13</option>
+                                                <option value="14">14</option>
+                                                <option value="15">15</option>
+                                                <option value="16">16</option>
+                                                <option value="17">17</option>
+                                                <option value="18">18</option>
+                                                <option value="19">19</option>
+                                                <option value="20">20</option>
+                                                <option value="21">21</option>
+                                                <option value="22">22</option>
+                                                <option value="23">23</option>
+                                                <option value="24">24</option>
+                                                <option value="25">25</option>
+                                                <option value="26">26</option>
+                                                <option value="27">27</option>
+                                                <option value="28">28</option>
+                                                <option value="29">29</option>
+                                                <option value="30">30</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="weekday-display">
+                                    <div class="weekday-label">Weekday</div>
+                                    <div class="weekday-value" id="islamic-weekday">-</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hebrew Calendar -->
+                        <div class="col-lg-6 col-md-12 mb-4">
+                            <div class="calendar-card">
+                                <div class="calendar-header">
+                                    <i data-feather="star" class="calendar-icon"></i>
+                                    <h3 class="calendar-title">Hebrew Calendar</h3>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-4">
+                                        <div class="date-form-group">
+                                            <label class="form-label">Year</label>
+                                            <input type="number" id="hebrew-year" class="form-control" value="5785" min="1" max="9999">
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="date-form-group">
+                                            <label class="form-label">Month</label>
+                                            <select id="hebrew-month" class="form-select">
+                                                <option value="1">Tishrei</option>
+                                                <option value="2">Heshvan</option>
+                                                <option value="3">Kislev</option>
+                                                <option value="4">Tevet</option>
+                                                <option value="5">Shevat</option>
+                                                <option value="6">Adar</option>
+                                                <option value="7">Nisan</option>
+                                                <option value="8">Iyar</option>
+                                                <option value="9">Sivan</option>
+                                                <option value="10">Tammuz</option>
+                                                <option value="11" selected>Av</option>
+                                                <option value="12">Elul</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="date-form-group">
+                                            <label class="form-label">Day</label>
+                                            <select id="hebrew-day" class="form-select">
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="7">7</option>
+                                                <option value="8">8</option>
+                                                <option value="9" selected>9</option>
+                                                <option value="10">10</option>
+                                                <option value="11">11</option>
+                                                <option value="12">12</option>
+                                                <option value="13">13</option>
+                                                <option value="14">14</option>
+                                                <option value="15">15</option>
+                                                <option value="16">16</option>
+                                                <option value="17">17</option>
+                                                <option value="18">18</option>
+                                                <option value="19">19</option>
+                                                <option value="20">20</option>
+                                                <option value="21">21</option>
+                                                <option value="22">22</option>
+                                                <option value="23">23</option>
+                                                <option value="24">24</option>
+                                                <option value="25">25</option>
+                                                <option value="26">26</option>
+                                                <option value="27">27</option>
+                                                <option value="28">28</option>
+                                                <option value="29">29</option>
+                                                <option value="30">30</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="weekday-display">
+                                    <div class="weekday-label">Weekday</div>
+                                    <div class="weekday-value" id="hebrew-weekday">-</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Julian Calendar -->
+                        <div class="col-lg-6 col-md-12 mb-4">
+                            <div class="calendar-card">
+                                <div class="calendar-header">
+                                    <i data-feather="clock" class="calendar-icon"></i>
+                                    <h3 class="calendar-title">Julian Calendar</h3>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-4">
+                                        <div class="date-form-group">
+                                            <label class="form-label">Year</label>
+                                            <input type="number" id="julian-year" class="form-control" value="2025" min="1" max="9999">
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="date-form-group">
+                                            <label class="form-label">Month</label>
+                                            <select id="julian-month" class="form-select">
+                                                <option value="1">January</option>
+                                                <option value="2">February</option>
+                                                <option value="3">March</option>
+                                                <option value="4">April</option>
+                                                <option value="5">May</option>
+                                                <option value="6">June</option>
+                                                <option value="7" selected>July</option>
+                                                <option value="8">August</option>
+                                                <option value="9">September</option>
+                                                <option value="10">October</option>
+                                                <option value="11">November</option>
+                                                <option value="12">December</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="date-form-group">
+                                            <label class="form-label">Day</label>
+                                            <select id="julian-day" class="form-select">
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="7">7</option>
+                                                <option value="8">8</option>
+                                                <option value="9">9</option>
+                                                <option value="10">10</option>
+                                                <option value="11">11</option>
+                                                <option value="12">12</option>
+                                                <option value="13">13</option>
+                                                <option value="14">14</option>
+                                                <option value="15">15</option>
+                                                <option value="16">16</option>
+                                                <option value="17">17</option>
+                                                <option value="18">18</option>
+                                                <option value="19">19</option>
+                                                <option value="20">20</option>
+                                                <option value="21">21</option>
+                                                <option value="22" selected>22</option>
+                                                <option value="23">23</option>
+                                                <option value="24">24</option>
+                                                <option value="25">25</option>
+                                                <option value="26">26</option>
+                                                <option value="27">27</option>
+                                                <option value="28">28</option>
+                                                <option value="29">29</option>
+                                                <option value="30">30</option>
+                                                <option value="31">31</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="weekday-display">
+                                    <div class="weekday-label">Weekday</div>
+                                    <div class="weekday-value" id="julian-weekday">-</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Kurdish Calendar -->
+                        <div class="col-lg-6 col-md-12 mb-4">
+                            <div class="calendar-card">
+                                <div class="calendar-header">
+                                    <i data-feather="flag" class="calendar-icon"></i>
+                                    <h3 class="calendar-title">Kurdish Calendar</h3>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-4">
+                                        <div class="date-form-group">
+                                            <label class="form-label">Year</label>
+                                            <input type="number" id="kurdish-year" class="form-control" value="1403" min="1" max="9999">
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="date-form-group">
+                                            <label class="form-label">Month</label>
+                                            <select id="kurdish-month" class="form-select">
+                                                <option value="1">Xakelêwe</option>
+                                                <option value="2">Gullan</option>
+                                                <option value="3">Jorî</option>
+                                                <option value="4">Pûşper</option>
+                                                <option value="5" selected>Gelawêj</option>
+                                                <option value="6">Xermanan</option>
+                                                <option value="7">Rezber</option>
+                                                <option value="8">Gelarêzan</option>
+                                                <option value="9">Sermawez</option>
+                                                <option value="10">Befranbar</option>
+                                                <option value="11">Rêbendan</option>
+                                                <option value="12">Reşemî</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="date-form-group">
+                                            <label class="form-label">Day</label>
+                                            <select id="kurdish-day" class="form-select">
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                                <option value="5">5</option>
+                                                <option value="6">6</option>
+                                                <option value="7">7</option>
+                                                <option value="8">8</option>
+                                                <option value="9">9</option>
+                                                <option value="10">10</option>
+                                                <option value="11">11</option>
+                                                <option value="12" selected>12</option>
+                                                <option value="13">13</option>
+                                                <option value="14">14</option>
+                                                <option value="15">15</option>
+                                                <option value="16">16</option>
+                                                <option value="17">17</option>
+                                                <option value="18">18</option>
+                                                <option value="19">19</option>
+                                                <option value="20">20</option>
+                                                <option value="21">21</option>
+                                                <option value="22">22</option>
+                                                <option value="23">23</option>
+                                                <option value="24">24</option>
+                                                <option value="25">25</option>
+                                                <option value="26">26</option>
+                                                <option value="27">27</option>
+                                                <option value="28">28</option>
+                                                <option value="29">29</option>
+                                                <option value="30">30</option>
+                                                <option value="31">31</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="weekday-display">
+                                    <div class="weekday-label">Weekday</div>
+                                    <div class="weekday-value" id="kurdish-weekday">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Julian Day Information Section -->
+                    <div class="julian-day-section">
+                        <h3 class="julian-day-title">Julian Day Information</h3>
+                        <div class="julian-day-grid">
+                            <div class="julian-day-item">
+                                <div class="julian-day-label">Julian Day Number</div>
+                                <div class="julian-day-value" id="julian-day-number">-</div>
+                                <div class="julian-day-description">Days since January 1, 4713 BCE</div>
+                            </div>
+                            <div class="julian-day-item">
+                                <div class="julian-day-label">Modified Julian Day</div>
+                                <div class="julian-day-value" id="modified-julian-day">-</div>
+                                <div class="julian-day-description">JDN minus 2,400,000.5</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Julian Day Info Tab -->
+                <div class="tab-content" id="julian-info">
+                    <div class="content-header">
+                        <h2 class="section-title">Julian Day System</h2>
+                        <p class="section-subtitle">Understanding the universal calendar reference system</p>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="calendar-card">
+                                <div class="calendar-header">
+                                    <i data-feather="info" class="calendar-icon"></i>
+                                    <h3 class="calendar-title">About Julian Day Numbers</h3>
+                                </div>
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <h5 class="text-primary mb-3">Julian Day Number (JDN)</h5>
+                                        <p>The Julian Day Number is a continuous count of days since the beginning of the Julian Period on January 1, 4713 BCE in the proleptic Julian calendar. It is widely used in astronomy and historical chronology.</p>
+                                        <ul>
+                                            <li>Starts from January 1, 4713 BCE</li>
+                                            <li>Continuous day count with no gaps</li>
+                                            <li>Used for astronomical calculations</li>
+                                            <li>Simplifies date arithmetic across calendars</li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5 class="text-primary mb-3">Modified Julian Day (MJD)</h5>
+                                        <p>The Modified Julian Day is defined as MJD = JD - 2400000.5. It was introduced to provide a more convenient reference point for modern dates and is commonly used in satellite tracking and other applications.</p>
+                                        <ul>
+                                            <li>Epoch: November 17, 1858</li>
+                                            <li>Smaller numbers for modern dates</li>
+                                            <li>Used in space and satellite applications</li>
+                                            <li>Starts at midnight UTC</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About Calendars Tab -->
+                <div class="tab-content" id="about">
+                    <div class="content-header">
+                        <h2 class="section-title">About Calendar Systems</h2>
+                        <p class="section-subtitle">Learn about the different calendar systems supported by this converter</p>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-lg-6 col-md-12 mb-4">
+                            <div class="calendar-card">
+                                <div class="calendar-header">
+                                    <i data-feather="sun" class="calendar-icon"></i>
+                                    <h3 class="calendar-title">Afghan/Persian Calendar</h3>
+                                </div>
+                                <p>A solar calendar used in Afghanistan and Iran, with 12 months totaling 365 or 366 days. The first six months have 31 days, the next five have 30 days, and the last month has 29 or 30 days in leap years.</p>
+                                <ul>
+                                    <li><strong>Type:</strong> Solar Calendar</li>
+                                    <li><strong>Epoch:</strong> March 22, 622 CE</li>
+                                    <li><strong>Leap Cycle:</strong> 33-year cycle</li>
+                                    <li><strong>New Year:</strong> Nowruz (Spring Equinox)</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6 col-md-12 mb-4">
+                            <div class="calendar-card">
+                                <div class="calendar-header">
+                                    <i data-feather="globe" class="calendar-icon"></i>
+                                    <h3 class="calendar-title">Gregorian Calendar</h3>
+                                </div>
+                                <p>The most widely used calendar system in the world, introduced by Pope Gregory XIII in 1582. It refined the Julian calendar to better align with the solar year.</p>
+                                <ul>
+                                    <li><strong>Type:</strong> Solar Calendar</li>
+                                    <li><strong>Epoch:</strong> January 1, 1 CE</li>
+                                    <li><strong>Leap Rule:</strong> Every 4 years, except century years not divisible by 400</li>
+                                    <li><strong>Average Year:</strong> 365.2425 days</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6 col-md-12 mb-4">
+                            <div class="calendar-card">
+                                <div class="calendar-header">
+                                    <i data-feather="moon" class="calendar-icon"></i>
+                                    <h3 class="calendar-title">Islamic Calendar</h3>
+                                </div>
+                                <p>A lunar calendar used in Islamic countries for religious purposes. Each month begins with the new moon, resulting in a year of approximately 354 days.</p>
+                                <ul>
+                                    <li><strong>Type:</strong> Lunar Calendar</li>
+                                    <li><strong>Epoch:</strong> July 16, 622 CE (Hijra)</li>
+                                    <li><strong>Leap Years:</strong> 11 years in every 30-year cycle</li>
+                                    <li><strong>Year Length:</strong> 354 or 355 days</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6 col-md-12 mb-4">
+                            <div class="calendar-card">
+                                <div class="calendar-header">
+                                    <i data-feather="star" class="calendar-icon"></i>
+                                    <h3 class="calendar-title">Hebrew Calendar</h3>
+                                </div>
+                                <p>A lunisolar calendar used in Jewish communities for religious observances. It attempts to synchronize lunar months with the solar year through a complex leap year system.</p>
+                                <ul>
+                                    <li><strong>Type:</strong> Lunisolar Calendar</li>
+                                    <li><strong>Epoch:</strong> October 7, 3761 BCE</li>
+                                    <li><strong>Leap Years:</strong> 7 years in every 19-year cycle</li>
+                                    <li><strong>Months:</strong> 12 or 13 months per year</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6 col-md-12 mb-4">
+                            <div class="calendar-card">
+                                <div class="calendar-header">
+                                    <i data-feather="clock" class="calendar-icon"></i>
+                                    <h3 class="calendar-title">Julian Calendar</h3>
+                                </div>
+                                <p>Introduced by Julius Caesar in 46 BCE, this was the predecessor to the Gregorian calendar. It has a simpler leap year rule but accumulated errors over time.</p>
+                                <ul>
+                                    <li><strong>Type:</strong> Solar Calendar</li>
+                                    <li><strong>Epoch:</strong> January 1, 1 CE</li>
+                                    <li><strong>Leap Rule:</strong> Every 4 years without exception</li>
+                                    <li><strong>Average Year:</strong> 365.25 days</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-6 col-md-12 mb-4">
+                            <div class="calendar-card">
+                                <div class="calendar-header">
+                                    <i data-feather="flag" class="calendar-icon"></i>
+                                    <h3 class="calendar-title">Kurdish Calendar</h3>
+                                </div>
+                                <p>Based on the Persian calendar but with Kurdish month names. It follows the same structure and leap year rules as the Afghan/Persian calendar system.</p>
+                                <ul>
+                                    <li><strong>Type:</strong> Solar Calendar</li>
+                                    <li><strong>Epoch:</strong> March 22, 622 CE</li>
+                                    <li><strong>Structure:</strong> Same as Persian calendar</li>
+                                    <li><strong>Language:</strong> Kurdish month names</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Initialize Feather Icons and Tab Navigation -->
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+        
+        // Tab Navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabItems = document.querySelectorAll('.tab-item');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabItems.forEach(tabItem => {
+                tabItem.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    
+                    // Remove active class from all tabs and contents
+                    tabItems.forEach(item => item.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    this.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
+                });
+            });
+        });
+    </script>
+    
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
