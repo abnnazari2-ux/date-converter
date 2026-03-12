@@ -1,0 +1,387 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RoleName {
+  SUPER_ADMIN
+  COMPANY_ADMIN
+  ACCOUNTANT
+  BOOKKEEPER
+  SALES_USER
+  EXPENSE_USER
+  APPROVER
+  AUDITOR_READ_ONLY
+}
+
+enum DocStatus {
+  DRAFT
+  APPROVED
+  SENT
+  PARTIALLY_PAID
+  PAID
+  OVERDUE
+  VOID
+}
+
+model User {
+  id           String       @id @default(cuid())
+  email        String       @unique
+  name         String
+  passwordHash String
+  createdAt    DateTime     @default(now())
+  memberships  Membership[]
+  auditLogs    AuditLog[]
+}
+
+model Company {
+  id                String              @id @default(cuid())
+  name              String
+  tagline           String              @default("Clarity in Every Entry")
+  baseCurrency      String              @default("USD")
+  fiscalYearStart   Int                 @default(1)
+  createdAt         DateTime            @default(now())
+  memberships       Membership[]
+  branches          Branch[]
+  customers         Customer[]
+  vendors           Vendor[]
+  products          ProductService[]
+  accounts          Account[]
+  journalEntries    JournalEntry[]
+  invoices          Invoice[]
+  bills             Bill[]
+  expenses          Expense[]
+  bankAccounts      BankAccount[]
+  bankTransfers     BankTransfer[]
+  reconciliations   BankReconciliation[]
+  taxRates          TaxRate[]
+  taxCodes          TaxCode[]
+  attachments       Attachment[]
+  auditLogs         AuditLog[]
+  recurringTemplates RecurringTemplate[]
+  settings          Setting[]
+  fiscalPeriods     FiscalPeriod[]
+  notifications     Notification[]
+}
+
+model Membership {
+  id        String   @id @default(cuid())
+  userId    String
+  companyId String
+  role      RoleName
+  user      User     @relation(fields: [userId], references: [id])
+  company   Company  @relation(fields: [companyId], references: [id])
+  @@unique([userId, companyId])
+}
+
+model Branch {
+  id        String   @id @default(cuid())
+  companyId String
+  name      String
+  company   Company  @relation(fields: [companyId], references: [id])
+}
+
+model Customer {
+  id           String    @id @default(cuid())
+  companyId    String
+  displayName  String
+  legalName    String?
+  email        String?
+  phone        String?
+  taxNumber    String?
+  creditLimit  Decimal?  @db.Decimal(14, 2)
+  currency     String    @default("USD")
+  company      Company   @relation(fields: [companyId], references: [id])
+  invoices     Invoice[]
+}
+
+model Vendor {
+  id           String   @id @default(cuid())
+  companyId    String
+  name         String
+  legalName    String?
+  email        String?
+  phone        String?
+  taxNumber    String?
+  currency     String   @default("USD")
+  company      Company  @relation(fields: [companyId], references: [id])
+  bills        Bill[]
+}
+
+model ProductService {
+  id             String   @id @default(cuid())
+  companyId      String
+  name           String
+  sku            String?
+  type           String
+  salesPrice     Decimal? @db.Decimal(14, 2)
+  cost           Decimal? @db.Decimal(14, 2)
+  incomeAccountId String?
+  expenseAccountId String?
+  taxCodeId      String?
+  active         Boolean  @default(true)
+  company        Company  @relation(fields: [companyId], references: [id])
+}
+
+model Account {
+  id            String   @id @default(cuid())
+  companyId     String
+  code          String
+  name          String
+  class         String
+  detailType    String
+  normalBalance String
+  isActive      Boolean  @default(true)
+  isSystem      Boolean  @default(false)
+  openingBalance Decimal @default(0) @db.Decimal(14, 2)
+  company       Company  @relation(fields: [companyId], references: [id])
+  lines         JournalEntryLine[]
+  @@unique([companyId, code])
+}
+
+model JournalEntry {
+  id           String             @id @default(cuid())
+  companyId    String
+  journalNo    String
+  date         DateTime
+  reference    String?
+  memo         String?
+  status       String             @default("POSTED")
+  sourceType   String?
+  sourceId     String?
+  createdAt    DateTime           @default(now())
+  company      Company            @relation(fields: [companyId], references: [id])
+  lines        JournalEntryLine[]
+  @@unique([companyId, journalNo])
+}
+
+model JournalEntryLine {
+  id            String       @id @default(cuid())
+  journalEntryId String
+  accountId     String
+  description   String?
+  debit         Decimal      @default(0) @db.Decimal(14, 2)
+  credit        Decimal      @default(0) @db.Decimal(14, 2)
+  journalEntry  JournalEntry @relation(fields: [journalEntryId], references: [id])
+  account       Account      @relation(fields: [accountId], references: [id])
+}
+
+model Invoice {
+  id          String       @id @default(cuid())
+  companyId   String
+  customerId  String
+  invoiceNo   String
+  date        DateTime
+  dueDate     DateTime
+  subtotal    Decimal      @db.Decimal(14, 2)
+  taxTotal    Decimal      @default(0) @db.Decimal(14, 2)
+  total       Decimal      @db.Decimal(14, 2)
+  balanceDue  Decimal      @db.Decimal(14, 2)
+  status      DocStatus    @default(DRAFT)
+  company     Company      @relation(fields: [companyId], references: [id])
+  customer    Customer     @relation(fields: [customerId], references: [id])
+  lines       InvoiceLine[]
+}
+
+model InvoiceLine {
+  id          String   @id @default(cuid())
+  invoiceId   String
+  description String
+  quantity    Decimal  @db.Decimal(14, 2)
+  rate        Decimal  @db.Decimal(14, 2)
+  amount      Decimal  @db.Decimal(14, 2)
+  taxRate     Decimal  @default(0) @db.Decimal(5, 2)
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id])
+}
+
+model CustomerPayment {
+  id        String   @id @default(cuid())
+  companyId String
+  customerId String
+  amount    Decimal  @db.Decimal(14, 2)
+  paidAt    DateTime
+  company   Company  @relation(fields: [companyId], references: [id])
+}
+
+model CustomerPaymentAllocation {
+  id         String   @id @default(cuid())
+  paymentId  String
+  invoiceId  String
+  amount     Decimal  @db.Decimal(14, 2)
+}
+
+model Bill {
+  id          String     @id @default(cuid())
+  companyId   String
+  vendorId    String
+  billNo      String
+  date        DateTime
+  dueDate     DateTime
+  subtotal    Decimal    @db.Decimal(14, 2)
+  taxTotal    Decimal    @default(0) @db.Decimal(14, 2)
+  total       Decimal    @db.Decimal(14, 2)
+  balanceDue  Decimal    @db.Decimal(14, 2)
+  status      DocStatus  @default(DRAFT)
+  company     Company    @relation(fields: [companyId], references: [id])
+  vendor      Vendor     @relation(fields: [vendorId], references: [id])
+  lines       BillLine[]
+}
+
+model BillLine {
+  id          String   @id @default(cuid())
+  billId      String
+  description String
+  amount      Decimal  @db.Decimal(14, 2)
+  taxRate     Decimal  @default(0) @db.Decimal(5, 2)
+  bill        Bill     @relation(fields: [billId], references: [id])
+}
+
+model VendorPayment {
+  id        String   @id @default(cuid())
+  companyId String
+  vendorId  String
+  amount    Decimal  @db.Decimal(14, 2)
+  paidAt    DateTime
+}
+
+model VendorPaymentAllocation {
+  id        String   @id @default(cuid())
+  paymentId String
+  billId    String
+  amount    Decimal  @db.Decimal(14, 2)
+}
+
+model Expense {
+  id        String   @id @default(cuid())
+  companyId String
+  payee     String
+  amount    Decimal  @db.Decimal(14, 2)
+  memo      String?
+  paidAt    DateTime
+  company   Company  @relation(fields: [companyId], references: [id])
+}
+
+model BankAccount {
+  id            String   @id @default(cuid())
+  companyId     String
+  name          String
+  accountType   String
+  currency      String
+  maskedNumber  String
+  openingBalance Decimal @default(0) @db.Decimal(14, 2)
+  company       Company  @relation(fields: [companyId], references: [id])
+}
+
+model BankTransfer {
+  id           String   @id @default(cuid())
+  companyId    String
+  fromAccountId String
+  toAccountId  String
+  amount       Decimal  @db.Decimal(14, 2)
+  date         DateTime
+  memo         String?
+  company      Company  @relation(fields: [companyId], references: [id])
+}
+
+model BankReconciliation {
+  id              String   @id @default(cuid())
+  companyId       String
+  bankAccountId   String
+  startDate       DateTime
+  endDate         DateTime
+  openingBalance  Decimal  @db.Decimal(14, 2)
+  endingBalance   Decimal  @db.Decimal(14, 2)
+  difference      Decimal  @db.Decimal(14, 2)
+  company         Company  @relation(fields: [companyId], references: [id])
+}
+
+model TaxRate {
+  id         String   @id @default(cuid())
+  companyId  String
+  name       String
+  rate       Decimal  @db.Decimal(5, 2)
+  type       String
+  company    Company  @relation(fields: [companyId], references: [id])
+}
+
+model TaxCode {
+  id         String   @id @default(cuid())
+  companyId  String
+  code       String
+  description String
+  outputTaxAccountId String?
+  inputTaxAccountId String?
+  company    Company  @relation(fields: [companyId], references: [id])
+}
+
+model Attachment {
+  id         String   @id @default(cuid())
+  companyId  String
+  recordType String
+  recordId   String
+  fileName   String
+  mimeType   String
+  fileSize   Int
+  createdAt  DateTime @default(now())
+  company    Company  @relation(fields: [companyId], references: [id])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  companyId   String
+  userId      String
+  module      String
+  recordType  String
+  recordId    String
+  action      String
+  beforeValue Json?
+  afterValue  Json?
+  createdAt   DateTime @default(now())
+  company     Company  @relation(fields: [companyId], references: [id])
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+model RecurringTemplate {
+  id          String   @id @default(cuid())
+  companyId   String
+  module      String
+  name        String
+  frequency   String
+  nextRunAt   DateTime
+  active      Boolean  @default(true)
+  company     Company  @relation(fields: [companyId], references: [id])
+}
+
+model Setting {
+  id         String   @id @default(cuid())
+  companyId  String
+  key        String
+  value      Json
+  company    Company  @relation(fields: [companyId], references: [id])
+  @@unique([companyId, key])
+}
+
+model FiscalPeriod {
+  id         String   @id @default(cuid())
+  companyId  String
+  name       String
+  startDate  DateTime
+  endDate    DateTime
+  status     String
+  company    Company  @relation(fields: [companyId], references: [id])
+}
+
+model Notification {
+  id         String   @id @default(cuid())
+  companyId  String
+  userId     String
+  title      String
+  message    String
+  readAt     DateTime?
+  createdAt  DateTime @default(now())
+  company    Company  @relation(fields: [companyId], references: [id])
+}

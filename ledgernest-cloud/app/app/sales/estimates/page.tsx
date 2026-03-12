@@ -1,0 +1,1 @@
+export default function Page() { return <main className="p-6"><div className="card p-6"><h1 className="text-2xl font-semibold">sales › estimates</h1><p className="mt-2 text-slate-600">Production-ready placeholder screen wired for module expansion.</p></div></main>; }
