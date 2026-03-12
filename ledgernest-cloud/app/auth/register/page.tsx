@@ -1,0 +1,1 @@
+export default function RegisterPage() { return <main className="p-10"><div className="card max-w-lg p-6"><h1 className="text-2xl font-semibold">Register</h1><p className="text-slate-600">Self-serve registration placeholder with company creation flow.</p></div></main>; }

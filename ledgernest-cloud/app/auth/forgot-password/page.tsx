@@ -1,0 +1,1 @@
+export default function ForgotPage() { return <main className="p-10"><div className="card max-w-lg p-6"><h1 className="text-2xl font-semibold">Forgot Password</h1><p className="text-slate-600">Password reset placeholder.</p></div></main>; }
